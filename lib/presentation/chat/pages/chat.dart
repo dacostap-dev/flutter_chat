@@ -1,4 +1,5 @@
 import 'package:chat_demo/core/constants.dart';
+import 'package:chat_demo/data/repositories/firebase/notification_service.dart';
 import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chat_demo/presentation/message/pages/message.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,17 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  final notificationService = NotificationService();
+
   @override
   void initState() {
     super.initState();
 
+    notificationService.requestPermission();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ChatBloc>().add(ChatEvent.doLoadChats());
+      notificationService.firebaseNotification(context);
     });
   }
 

@@ -9,14 +9,25 @@ import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chat_demo/presentation/chat/pages/chat.dart';
 import 'package:chat_demo/presentation/message/bloc/message_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+Future<void> _onBackgroundMessage(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
+
   runApp(const MyApp());
 }
 
