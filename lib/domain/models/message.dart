@@ -11,6 +11,18 @@ class Message extends Equatable {
     required this.content,
   });
 
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+        senderId: json["sender_id"],
+        receiverId: json["receiver_id"],
+        content: json["content"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "sender_id": senderId,
+        "receiver_id": receiverId,
+        "content": content,
+      };
+
   @override
   List<Object?> get props => [senderId, receiverId, content];
 }

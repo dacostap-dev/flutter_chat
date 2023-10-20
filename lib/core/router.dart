@@ -15,7 +15,7 @@ Route onGenerateRoute(RouteSettings settings) {
 
       return MaterialPageRoute(
         settings: const RouteSettings(name: MessagesPage.route),
-        builder: (_) => MessagesPage(user: user),
+        builder: (_) => MessagesPage(contact: user),
       );
     default:
       throw Exception('Route not found');

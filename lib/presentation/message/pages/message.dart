@@ -1,3 +1,4 @@
+import 'package:chat_demo/core/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat_demo/domain/models/message.dart';
@@ -8,9 +9,9 @@ import 'package:chat_demo/presentation/message/widgets/message_bubble.dart';
 class MessagesPage extends StatefulWidget {
   static const String route = 'messages-page';
 
-  final User user;
+  final User contact;
 
-  const MessagesPage({super.key, required this.user});
+  const MessagesPage({super.key, required this.contact});
 
   @override
   State<MessagesPage> createState() => _MessagesPageState();
@@ -25,14 +26,19 @@ class _MessagesPageState extends State<MessagesPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MessageBloc>().add(MessageEvent.doLoadMessages());
+      context
+          .read<MessageBloc>()
+          .add(MessageEvent.doLoadMessages(contactId: widget.contact.userId));
     });
   }
 
-  void scrollDown() {
+  void newMessageLoaded() {
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
+
+    _textController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -46,12 +52,12 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.user.name),
+        title: Text(widget.contact.name),
       ),
       body: BlocConsumer<MessageBloc, MessageState>(
         listener: (BuildContext context, MessageState state) {
           (switch (state) {
-            NewMessageSended() => scrollDown(),
+            NewMessageSended() => newMessageLoaded(),
             _ => null,
           });
         },
@@ -71,7 +77,8 @@ class _MessagesPageState extends State<MessagesPage> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  final isMe = messages[index].senderId == "1";
+                  final isMe =
+                      messages[index].senderId == AppConstants.kUserAdminId;
                   return MessageBubble(
                     isMe: isMe,
                     message: messages[index],
@@ -99,8 +106,8 @@ class _MessagesPageState extends State<MessagesPage> {
             IconButton(
                 onPressed: () {
                   final newMessage = Message(
-                    senderId: '1',
-                    receiverId: '2',
+                    senderId: AppConstants.kUserAdminId,
+                    receiverId: widget.contact.userId,
                     content: _textController.text,
                   );
 

@@ -1,15 +1,22 @@
 import 'package:chat_demo/core/router.dart';
-import 'package:chat_demo/data/repositories/message_repository_impl.dart';
-import 'package:chat_demo/data/repositories/user_repository_impl.dart';
+import 'package:chat_demo/data/repositories/firebase/message_repository_firebase_impl.dart';
+import 'package:chat_demo/data/repositories/firebase/user_repository_firebase_impl.dart';
+
 import 'package:chat_demo/domain/repositories/message_repository.dart';
 import 'package:chat_demo/domain/repositories/users_repository.dart';
+import 'package:chat_demo/firebase_options.dart';
 import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chat_demo/presentation/chat/pages/chat.dart';
 import 'package:chat_demo/presentation/message/bloc/message_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -21,10 +28,10 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ChatRepository>(
-          create: (context) => ChatRepositoryImpl(),
+          create: (context) => ChatRepositoryFirebaseImpl(),
         ),
         RepositoryProvider<MessageRepository>(
-          create: (context) => MessageRepositoryImpl(),
+          create: (context) => MessageRepositoryFirebaseImpl(),
         ),
       ],
       child: MultiBlocProvider(
@@ -37,6 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(
             useMaterial3: true,

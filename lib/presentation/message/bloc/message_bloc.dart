@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:chat_demo/core/constants.dart';
 import 'package:chat_demo/domain/models/message.dart';
 import 'package:chat_demo/domain/repositories/message_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -15,14 +16,28 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   _loadMessages(DoLoadMessages event, Emitter<MessageState> emit) async {
-    emit(MessageState.loadingMessages());
-    final messages = await _messageRepository.loadMessages();
-    emit(MessageState.loadedMessages(messages: messages));
+    //Para Stream
+    print(event.contactId);
+
+    await emit.forEach(
+        _messageRepository.loadMessages(
+          userId: AppConstants.kUserAdminId,
+          receiverId: event.contactId,
+        ), onData: (data) {
+      print(data);
+      return MessageState.loadedMessages(messages: data);
+    }, onError: (error, _) {
+      return MessageState.loadedMessagesFailed(message: error.toString());
+    });
   }
 
   _sendMessage(DoSendMessage event, Emitter<MessageState> emit) async {
     emit(MessageState.loadingNewMessage());
-    await _messageRepository.loadMessages();
+    // await Future.delayed(const Duration(seconds: 1));
+    await _messageRepository.sendMessage(
+      message: event.message,
+    );
+
     emit(MessageState.newMessageSended());
   }
 }

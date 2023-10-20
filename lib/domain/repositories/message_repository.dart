@@ -1,7 +1,12 @@
 import 'package:chat_demo/domain/models/message.dart';
 
 abstract class MessageRepository {
-  Future<List<Message>> loadMessages();
+  Stream<List<Message>> loadMessages({
+    required String userId,
+    required String receiverId,
+  });
 
-  Future<void> sendMessage();
+  Future<void> sendMessage({
+    required Message message,
+  });
 }
