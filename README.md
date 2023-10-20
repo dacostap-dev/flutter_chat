@@ -1,16 +1,18 @@
 # chat_demo
 
-A new Flutter project.
+Un chat demo realizado con clean arquicture, firestore and firebase cloud messaging, utiliza bloc como gestor de estados y equatable para la comparación de objetos
 
-## Getting Started
+1. Integración con Firebase: Implementado
+2. Chat con N usuarios: Implementado
+3. Historial de Mensajes: Implementado sin scroll
+4. Persistencia Local: No implementado.
+5. Autenticación: No requerido
 
-This project is a starting point for a Flutter application.
+Requisitos Técnicos:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Utiliza Riverpod, Bloc o Provider como manejadores de estado para gestionar los datos de la
+  aplicación. ✅
+- Utiliza Firebase Cloud Messaging para la entrega de notificaciones en tiempo real. ✅
+- Utiliza una base de datos local, como SQLite o Hive, para almacenar los mensajes de chat.❌
+- Organiza el código de manera limpia y estructurada. ✅
+- Asegúrate de manejar errores y situaciones de desconexión de manera adecuada. ✅
