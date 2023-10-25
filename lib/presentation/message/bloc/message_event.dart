@@ -3,10 +3,15 @@ part of 'message_bloc.dart';
 sealed class MessageEvent extends Equatable {
   const MessageEvent();
 
-  factory MessageEvent.doLoadMessages({required String contactId}) =>
+  factory MessageEvent.doLoadMessages({
+    required String contactId,
+  }) =>
       DoLoadMessages(contactId: contactId);
-  factory MessageEvent.doSendMessage({required Message message}) =>
-      DoSendMessage(message: message);
+  factory MessageEvent.doSendMessage({
+    required Message message,
+    required String receiverToken,
+  }) =>
+      DoSendMessage(message: message, receiverToken: receiverToken);
 
   @override
   List<Object> get props => [];
@@ -23,8 +28,12 @@ class DoLoadMessages extends MessageEvent {
 
 class DoSendMessage extends MessageEvent {
   final Message message;
+  final String receiverToken;
 
-  const DoSendMessage({required this.message});
+  const DoSendMessage({
+    required this.message,
+    required this.receiverToken,
+  });
 
   @override
   List<Object> get props => [message];

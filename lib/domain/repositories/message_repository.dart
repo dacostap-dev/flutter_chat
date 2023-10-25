@@ -9,4 +9,8 @@ abstract class MessageRepository {
   Future<void> sendMessage({
     required Message message,
   });
+
+  Future<String> getContactToken({
+    required String receiverId,
+  });
 }

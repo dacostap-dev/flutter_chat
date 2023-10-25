@@ -42,4 +42,10 @@ class MessageRepositoryFirebaseImpl implements MessageRepository {
               return Message.fromJson(doc.data());
             }).toList());
   }
+
+  @override
+  Future<String> getContactToken({required String receiverId}) async {
+    final doc = await _db.collection('users').doc(receiverId).get();
+    return doc.data()!['token'];
+  }
 }

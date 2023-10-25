@@ -17,4 +17,10 @@ class MessageRepositoryImpl implements MessageRepository {
     // TODO: implement loadMessages
     throw UnimplementedError();
   }
+
+  @override
+  Future<String> getContactToken({required String receiverId}) {
+    // TODO: implement getContactToken
+    throw UnimplementedError();
+  }
 }

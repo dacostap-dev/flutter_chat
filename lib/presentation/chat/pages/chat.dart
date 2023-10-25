@@ -1,5 +1,5 @@
-import 'package:chat_demo/core/constants.dart';
 import 'package:chat_demo/data/repositories/firebase/notification_service.dart';
+import 'package:chat_demo/presentation/auth/bloc/auth_bloc.dart';
 import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
 import 'package:chat_demo/presentation/message/pages/message.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +36,11 @@ class _ChatPageState extends State<ChatPage> {
         title: const Text('Contacts'),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(
+        buildWhen: (previous, current) => switch (current) {
+          LoadingChats() => true,
+          LoadedChats() => true,
+          _ => false,
+        },
         builder: (context, state) {
           return switch (state) {
             LoadingChats() => const Center(
@@ -45,13 +50,15 @@ class _ChatPageState extends State<ChatPage> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  if (users[index].userId == AppConstants.kUserAdminId) {
+                  if (users[index].userId == context.read<AuthBloc>().authId) {
                     return const SizedBox();
                   }
 
                   return ListTile(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(MessagesPage.route, arguments: users[index]),
+                    onTap: () => Navigator.of(context).pushNamed(
+                      MessagesPage.route,
+                      arguments: users[index].userId,
+                    ),
                     title: Text(users[index].name),
                   );
                 },

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat_demo/core/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_demo/presentation/message/pages/message.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -37,9 +37,20 @@ class NotificationService {
   void firebaseNotification(BuildContext context) async {
     await init();
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print(message);
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+      print('listen-onMessageOpenedApp');
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessagesPage(
+            contactId: message.data['senderId'],
+          ),
+        ),
+      );
+    });
 
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('listen-onMessage');
       await _showLocalNotification(message);
     });
   }
@@ -111,27 +122,23 @@ class NotificationService {
     return token ?? '';
   }
 
-  Future<void> _saveToken(String token) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(AppConstants.kUserAdminId)
-        .set({'token': token}, SetOptions(merge: true));
-  }
-
   Future<void> sendNotification({
     required String body,
     required String receiverToken,
+    required String senderId,
   }) async {
     print('sendNotification');
+    print('receiverToken: $receiverToken');
+    print('senderId: $senderId');
 
     try {
       final uri = Uri.parse('https://fcm.googleapis.com/fcm/send');
 
-      await _client.post(
+      final res = await _client.post(
         uri,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "key ${AppConstants.kFirebaseNotificationKey}",
+          "Authorization": "key=${AppConstants.kFirebaseNotificationKey}",
         },
         body: jsonEncode({
           "to": receiverToken,
@@ -142,9 +149,12 @@ class NotificationService {
           },
           "data": {
             "status": "done",
+            "senderId": senderId,
           },
         }),
       );
+      print(res.statusCode);
+      print(res.body);
     } catch (e) {
       print(e.toString());
     }
