@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat_demo/core/constants.dart';
+import 'package:chat_demo/presentation/chat/pages/chat.dart';
 import 'package:chat_demo/presentation/message/pages/message.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -39,14 +40,14 @@ class NotificationService {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       print('listen-onMessageOpenedApp');
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MessagesPage(
-            contactId: message.data['senderId'],
+      await Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MessagesPage(
+              contactId: message.data['senderId'],
+            ),
           ),
-        ),
-      );
+          ModalRoute.withName(ChatPage.route));
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -118,7 +119,6 @@ class NotificationService {
   Future<String> getToken() async {
     final token = await FirebaseMessaging.instance.getToken();
     print('token $token');
-    // await _saveToken(token!);
     return token ?? '';
   }
 

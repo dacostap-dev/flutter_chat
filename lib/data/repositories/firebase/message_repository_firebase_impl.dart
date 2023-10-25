@@ -15,7 +15,10 @@ class MessageRepositoryFirebaseImpl implements MessageRepository {
         .collection('chat')
         .doc(message.receiverId)
         .collection('messages')
-        .add(message.toJson());
+        .add({
+      ...message.toJson(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
 
     await _db
         .collection('users')
@@ -23,7 +26,10 @@ class MessageRepositoryFirebaseImpl implements MessageRepository {
         .collection('chat')
         .doc(message.senderId)
         .collection('messages')
-        .add(message.toJson());
+        .add({
+      ...message.toJson(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 
   @override
@@ -37,6 +43,7 @@ class MessageRepositoryFirebaseImpl implements MessageRepository {
         .collection('chat')
         .doc(receiverId)
         .collection('messages')
+        .orderBy('timestamp', descending: false)
         .snapshots(includeMetadataChanges: true)
         .asyncMap((snapshot) => snapshot.docs.map((doc) {
               return Message.fromJson(doc.data());

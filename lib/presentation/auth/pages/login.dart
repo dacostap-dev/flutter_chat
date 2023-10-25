@@ -1,5 +1,6 @@
 import 'package:chat_demo/presentation/auth/bloc/auth_bloc.dart';
 import 'package:chat_demo/presentation/chat/pages/chat.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -80,13 +81,15 @@ class _LoginPageState extends State<LoginPage> {
             BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 return switch (state) {
-                  AuthLoadingLogin() => const ElevatedButton(
+                  AuthLoadingLogin() => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(200, 40)),
                       onPressed: null,
-                      child: Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ),
+                      child: const CupertinoActivityIndicator(),
                     ),
                   _ => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(200, 40)),
                       onPressed: groupValue != null
                           ? () {
                               print(groupValue);

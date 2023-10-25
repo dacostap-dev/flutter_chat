@@ -1,7 +1,7 @@
 import 'package:chat_demo/data/repositories/firebase/notification_service.dart';
-import 'package:chat_demo/presentation/auth/bloc/auth_bloc.dart';
 import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
-import 'package:chat_demo/presentation/message/pages/message.dart';
+import 'package:chat_demo/presentation/chat/widgets/contact_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,7 +33,10 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contacts'),
+        title: Text(
+          'Chats',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(
         buildWhen: (previous, current) => switch (current) {
@@ -47,20 +50,10 @@ class _ChatPageState extends State<ChatPage> {
                 child: CircularProgressIndicator.adaptive(),
               ),
             LoadedChats(users: final users) => ListView.separated(
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
+                separatorBuilder: (context, index) => const Divider(),
+                padding: const EdgeInsets.all(4),
                 itemBuilder: (context, index) {
-                  if (users[index].userId == context.read<AuthBloc>().authId) {
-                    return const SizedBox();
-                  }
-
-                  return ListTile(
-                    onTap: () => Navigator.of(context).pushNamed(
-                      MessagesPage.route,
-                      arguments: users[index].userId,
-                    ),
-                    title: Text(users[index].name),
-                  );
+                  return ContactWidget(user: users[index]);
                 },
                 itemCount: users.length,
               ),

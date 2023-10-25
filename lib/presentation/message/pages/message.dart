@@ -1,5 +1,6 @@
 import 'package:chat_demo/presentation/auth/bloc/auth_bloc.dart';
 import 'package:chat_demo/presentation/chat/bloc/chat_bloc.dart';
+import 'package:chat_demo/presentation/chat/widgets/custom_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat_demo/domain/models/message.dart';
@@ -72,7 +73,17 @@ class _MessagesPageState extends State<MessagesPage> {
                       const Center(child: CircularProgressIndicator.adaptive()),
                 ),
               LoadedContactDetail() => AppBar(
-                  title: Text(state.user.name),
+                  title: Row(
+                    children: [
+                      CustomAvatar(
+                        avatarUrl: state.user.avatar,
+                        avatarHeight: 40,
+                        avatarWidth: 40,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(state.user.name),
+                    ],
+                  ),
                 ),
               FailedLoadContactDetail(message: final message) => AppBar(
                   title: Text(message),
@@ -100,7 +111,8 @@ class _MessagesPageState extends State<MessagesPage> {
               const Center(child: CircularProgressIndicator.adaptive()),
             MessagesLoaded(messages: final messages) => ListView.separated(
                 controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),
                 itemBuilder: (context, index) {
@@ -126,6 +138,7 @@ class _MessagesPageState extends State<MessagesPage> {
               child: TextFormField(
                 controller: _textController,
                 decoration: const InputDecoration(
+                  isDense: true,
                   border: OutlineInputBorder(),
                 ),
               ),

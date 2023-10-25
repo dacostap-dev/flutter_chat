@@ -57,7 +57,10 @@ class MyApp extends StatelessWidget {
             create: (context) => AuthBloc(context.read()),
           ),
           BlocProvider(
-            create: (context) => ChatBloc(context.read()),
+            create: (context) => ChatBloc(
+              context.read(),
+              context.read(),
+            ),
           ),
           BlocProvider(
             create: (context) => MessageBloc(
@@ -69,7 +72,8 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
-          theme: ThemeData(
+          themeMode: ThemeMode.dark,
+          theme: ThemeData.dark(
             useMaterial3: true,
           ),
           onGenerateRoute: onGenerateRoute,
